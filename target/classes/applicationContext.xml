@@ -57,10 +57,10 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
-	<bean id="userBean" class="activiti.test.UserBean">
+	<!--  <bean id="userBean" class="activiti.test.UserBean">
 		<property name="runtimeService" ref="runtimeService" />
 	</bean>
 
 	<bean id="printer" class="activiti.test.Printer" />
-
+-->
 </beans>

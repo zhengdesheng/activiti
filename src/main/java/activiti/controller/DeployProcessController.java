@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,15 +35,47 @@ public class DeployProcessController extends AbstractController {
 			@RequestParam(value = "file", required = true) MultipartFile file) {
 		String fileName = file.getOriginalFilename();
 		System.out.println("文件名：" + fileName);
-		InputStream zipStream;
+
 		try {
-			zipStream = file.getInputStream();
-			repositoryService.createDeployment().addZipInputStream(new ZipInputStream(zipStream)).deploy();
+			InputStream zipStream = file.getInputStream();
+			String extension = FilenameUtils.getExtension(fileName);
+			if (extension.equals("zip") || extension.equals("bar")) {
+				
+				repositoryService.createDeployment().addZipInputStream(new ZipInputStream(zipStream)).deploy();
+			}else{
+				repositoryService.createDeployment().addInputStream(fileName, zipStream).deploy();
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		return "redirect:/login";
+	}
+
+	@RequestMapping(value = "/nameLink")
+	public void nameLink(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "pdid", required = true) String pdId,
+			@RequestParam(value = "resourceName", required = true) String resourceName) throws IOException {
+		ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery();
+		ProcessDefinition process = query.processDefinitionId(pdId).singleResult();
+		InputStream inputStream = repositoryService.getResourceAsStream(process.getDeploymentId(), resourceName);
+		byte[] b = new byte[1024];
+
+		int len = -1;
+
+		while ((len = inputStream.read(b, 0, 1024)) != -1) {
+			response.getOutputStream().write(b, 0, len);
+		}
+
+	}
+
+	@RequestMapping(value = "/delete-deployment")
+	public String delete_deployment(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "deploymentId", required = true) String pdId) {
+
+		repositoryService.deleteDeployment(pdId,true);
 		return "redirect:/login";
 	}
 

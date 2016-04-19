@@ -40,7 +40,7 @@ public class AbstractTest {
 		managementService = (ManagementService) ApplcationContextUtil.getApplicationContext()
 				.getBean("managementService");
 		formService = (FormService) ApplcationContextUtil.getApplicationContext().getBean("formService");
-		setUserAndGroup();
+		//setUserAndGroup();
 	}
 	
 	public void inputStreamBybpmn(String filePath){

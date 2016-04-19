@@ -39,9 +39,9 @@
 					<td>${pd.name }</td>
 					<td>${pd.key }</td>
 					<td>${pd.version }</td>
-					<td><a target="_blank" href='${ctx }/chapter5/read-resource?pdid=${pd.id }&resourceName=${pd.resourceName }'>${pd.resourceName }</a></td>
-					<td><a target="_blank" href='${ctx }/chapter5/read-resource?pdid=${pd.id }&resourceName=${pd.diagramResourceName }'>${pd.diagramResourceName }</a></td>
-					<td><a target="_blank" href='${ctx }/chapter5/delete-deployment?deploymentId=${pd.deploymentId }'>删除</a></td>
+					<td><a target="_blank" href='${ctx }/nameLink?pdid=${pd.id }&resourceName=${pd.resourceName }'>${pd.resourceName }</a></td>
+					<td><a target="_blank" href='${ctx }/nameLink?pdid=${pd.id }&resourceName=${pd.diagramResourceName }'>${pd.diagramResourceName }</a></td>
+					<td><a target="_blank" href='${ctx }/delete-deployment?deploymentId=${pd.deploymentId }'>删除</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
