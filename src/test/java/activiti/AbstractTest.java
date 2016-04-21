@@ -15,7 +15,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.junit.Before;
 
-import util.ApplcationContextUtil;
+import activiti.util.ApplcationContextUtil;
 
 public class AbstractTest {
 	protected ProcessEngine processEngine;

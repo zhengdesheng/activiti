@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import util.ApplcationContextUtil;
+import activiti.util.ApplcationContextUtil;
 
 public class VerySimpleLeaveProcessTest extends AbstractTest {
 

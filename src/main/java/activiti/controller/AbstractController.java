@@ -9,7 +9,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 
-import util.ApplcationContextUtil;
+import activiti.common.persistence.util.ApplicationContextHelper;
+ 
 
 public abstract class AbstractController {
 
@@ -23,15 +24,15 @@ public abstract class AbstractController {
 	protected FormService formService;
 	
 	public AbstractController(){
-		processEngine = (ProcessEngine) ApplcationContextUtil.getApplicationContext().getBean("processEngine");
-		identityService = (IdentityService) ApplcationContextUtil.getApplicationContext().getBean("identityService");
-		repositoryService = (RepositoryService) ApplcationContextUtil.getApplicationContext()
+		processEngine = (ProcessEngine) ApplicationContextHelper.getApplicationContext().getBean("processEngine");
+		identityService = (IdentityService) ApplicationContextHelper.getApplicationContext().getBean("identityService");
+		repositoryService = (RepositoryService) ApplicationContextHelper.getApplicationContext()
 				.getBean("repositoryService");
-		runtimeService = (RuntimeService) ApplcationContextUtil.getApplicationContext().getBean("runtimeService");
-		taskService = (TaskService) ApplcationContextUtil.getApplicationContext().getBean("taskService");
-		historyService = (HistoryService) ApplcationContextUtil.getApplicationContext().getBean("historyService");
-		managementService = (ManagementService) ApplcationContextUtil.getApplicationContext()
+		runtimeService = (RuntimeService) ApplicationContextHelper.getApplicationContext().getBean("runtimeService");
+		taskService = (TaskService) ApplicationContextHelper.getApplicationContext().getBean("taskService");
+		historyService = (HistoryService) ApplicationContextHelper.getApplicationContext().getBean("historyService");
+		managementService = (ManagementService) ApplicationContextHelper.getApplicationContext()
 				.getBean("managementService");
-		formService = (FormService) ApplcationContextUtil.getApplicationContext().getBean("formService");
+		formService = (FormService) ApplicationContextHelper.getApplicationContext().getBean("formService");
 	}
 }

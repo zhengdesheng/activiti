@@ -8,6 +8,7 @@
         http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 
 	<description>配置mvc</description>
+ 
 	<!-- 激活@Controller模式 -->
 	<mvc:annotation-driven />
 	<context:component-scan base-package="activiti.controller"
@@ -15,6 +16,8 @@
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
+	
+	
 	<!-- 定义JSP文件的位置 -->
 	<bean id="jspViewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">

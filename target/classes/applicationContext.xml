@@ -14,19 +14,100 @@
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
 	default-lazy-init="true">
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/activiti" />
-		<property name="username" value="root" />
-		<property name="password" value="48STX2X" />
-	</bean>
+	<context:annotation-config /><!-- 隐式的向spring中注册 -->
 
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<!-- 自动扫描包，其中不包括Controller,Controller -->
+	<context:component-scan base-package="activiti">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+	<!-- 读取jdbc.properties配置文件 -->
+	<context:property-placeholder location="classpath:application.properties" />
+	<!-- 数据源配置 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="activiti" />
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+                <prop key="net.sf.ehcache.configurationResourceName">${hibernate.ehcache.configFile}</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.query_cache}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+			</props>
+		</property>
 	</bean>
 
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 事务管理器配置, Hibernate4事务 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 使用annotation定义事务,spring容器缺省事务管理器：以加载顺序，首先加载的作为缺省 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+	<!-- 定义aspectj -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- JSR303 hibernate validator定义 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- 数据库映射 -->
+	<!-- destroy-method="close"的作用是当数据库连接不使用的时候,就把该连接重新放到数据池中,方便下次使用调用. -->
+	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+
+		<property name="maxIdle" value="${jdbc.maxIdle}" /><!-- 最大连接数 -->
+		<property name="minIdle" value="${jdbc.minIdle}" /><!-- 最小连接数 -->
+		<property name="maxActive" value="${jdbc.maxActive}" /><!-- 最大活动连接数 -->
+		<property name="maxWait" value="${jdbc.maxWait}" /><!-- 最大等待时间 -->
+		<property name="initialSize" value="${jdbc.initialSize}" /><!-- 
+			初始化连接数 -->
+
+		<!-- (boolean) 标记是否删除泄露的连接， 如果他们超过了removeAbandonedTimout 的限制。 如果设置为true， 
+			连接被认为是被泄露并且可以被删除， 如果空闲时间超过removeAbandonedTimeout。 设置为true 可以为写法糟糕的没有关闭连接的程序修复数据库连接。 
+			参考logAbandoned -->
+		<property name="removeAbandoned" value="${jdbc.removeAbandoned}" />
+		<!-- (int) 泄露的连接可以被删除的超时值， 单位秒应设置为应用中查询执行最长的时间 -->
+		<property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}" />
+
+		<!-- 连接返回给调用者之前验证连接是否有效 -->
+		<property name="validationQuery" value="select 1" />
+		<!-- (long) 避免过度验证，保证验证不超过这个频率——以毫秒为单位。如果一个连接应该被验证， 但上次验证未达到指定间隔，将不再次验证。 
+			30000（30秒） -->
+		<property name="validationInterval" value="${jdbc.validationInterval}" />
+		<!-- 是否自动提交 -->
+		<property name="defaultAutoCommit" value="${jdbc.defaulrAutoCommit}" />
+		<!-- 验证失败时，是否将连接从池中丢弃 -->
+		<property name="testWhileIdle" value="${jdbc.testWhileIdle}" />
+		<!-- 在return给pool时，是否提前进行validate操作 -->
+		<property name="testOnReturn" value="${jdbc.testOnReturn}" />
+		<!-- 在borrow一个pool实例时，是否提前进行validate操作 -->
+		<property name="testOnBorrow" value="${jdbc.testOnBorrow}" />
+		<!-- 把空闲时间超过minEvictableIdleTimeMillis毫秒的连接断开, 直到连接池中的连接数到minIdle为止(毫秒，30分钟) -->
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}" />
+		<!-- 连接池中连接可空闲的时间（毫秒，5分钟） -->
+		<property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}" />
+		<!-- 在每次空闲连接回收器线程(如果有)运行时检查的连接数量 -->
+		<property name="numTestsPerEvictionRun" value="${jdbc.numTestsPerEvictionRun}" />
+	</bean>
 	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />
@@ -55,12 +136,4 @@
 	<bean id="formService" factory-bean="processEngine"
 		factory-method="getFormService" />
 
-	<tx:annotation-driven transaction-manager="transactionManager" />
-
-	<!--  <bean id="userBean" class="activiti.test.UserBean">
-		<property name="runtimeService" ref="runtimeService" />
-	</bean>
-
-	<bean id="printer" class="activiti.test.Printer" />
--->
 </beans>
