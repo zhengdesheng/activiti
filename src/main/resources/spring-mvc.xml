@@ -43,5 +43,5 @@
 	<!-- 定义无需Controller的url<->view直接映射 -->
 	<!-- 表示当访问主页时自动转发到index控制器 -->
 	<!-- 默认访问跳转到登录页面 -->
-	<mvc:view-controller path="/" view-name="redirect:/login" />
+	<mvc:view-controller path="/" view-name="redirect:/main/loginInit" />
 </beans>

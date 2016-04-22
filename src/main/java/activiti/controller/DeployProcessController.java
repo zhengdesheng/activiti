@@ -26,7 +26,7 @@ import activiti.service.LeaveService;
 
 @Controller
 public class DeployProcessController extends AbstractController {
-	
+
 	@Autowired
 	private LeaveService thisService;
 
@@ -35,7 +35,7 @@ public class DeployProcessController extends AbstractController {
 
 		List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().list();
 		model.addAttribute("processDefinitionList", list);
-		 
+
 		return "activiti/process-list";
 	}
 
@@ -49,9 +49,9 @@ public class DeployProcessController extends AbstractController {
 			InputStream zipStream = file.getInputStream();
 			String extension = FilenameUtils.getExtension(fileName);
 			if (extension.equals("zip") || extension.equals("bar")) {
-				
+
 				repositoryService.createDeployment().addZipInputStream(new ZipInputStream(zipStream)).deploy();
-			}else{
+			} else {
 				repositoryService.createDeployment().addInputStream(fileName, zipStream).deploy();
 			}
 
@@ -84,7 +84,7 @@ public class DeployProcessController extends AbstractController {
 	public String delete_deployment(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value = "deploymentId", required = true) String pdId) {
 
-		repositoryService.deleteDeployment(pdId,true);
+		repositoryService.deleteDeployment(pdId, true);
 		return "redirect:/login";
 	}
 

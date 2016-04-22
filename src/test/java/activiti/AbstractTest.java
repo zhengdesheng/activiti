@@ -27,7 +27,6 @@ public class AbstractTest {
 	protected ManagementService managementService;
 	protected FormService formService;
 
- 
 	@Before
 	public void setUp() {
 		processEngine = (ProcessEngine) ApplcationContextUtil.getApplicationContext().getBean("processEngine");
@@ -40,32 +39,32 @@ public class AbstractTest {
 		managementService = (ManagementService) ApplcationContextUtil.getApplicationContext()
 				.getBean("managementService");
 		formService = (FormService) ApplcationContextUtil.getApplicationContext().getBean("formService");
-		//setUserAndGroup();
+		// setUserAndGroup();
 	}
-	
-	public void inputStreamBybpmn(String filePath){
+
+	public void inputStreamBybpmn(String filePath) {
 		repositoryService.createDeployment().addClasspathResource(filePath).deploy();
 	}
-	
-	public void setUserAndGroup(){
+
+	public void setUserAndGroup() {
 		Group group = identityService.newGroup("deptLeader");
 		group.setName("部门领导");
 		group.setType("assignment");
 		identityService.saveGroup(group);
-		
+
 		User user = identityService.newUser("zhengdesheng");
 		user.setFirstName("zheng");
 		user.setLastName("desheng");
 		user.setEmail("812370410@qq.com");
 		identityService.saveUser(user);
-		
+
 		identityService.createMembership("zhengdesheng", "deptLeader");
-		
+
 		User userInGroup = identityService.createUserQuery().memberOfGroup("deptLeader").singleResult();
 		assertNotNull(userInGroup);
-		
-		assertEquals("zhengdesheng",userInGroup.getId());
-		
+
+		assertEquals("zhengdesheng", userInGroup.getId());
+
 		Group groupContainZds = identityService.createGroupQuery().groupMember("zhengdesheng").singleResult();
 		assertNotNull(groupContainZds);
 		assertEquals("deptLeader", groupContainZds.getId());

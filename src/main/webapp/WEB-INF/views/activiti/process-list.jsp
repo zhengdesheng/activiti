@@ -3,9 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<%@ include file="/WEB-INF/common/global.jsp"%>
-	<%@ include file="/WEB-INF/common/meta.jsp" %>
-	<%@ include file="/WEB-INF/common/include-base-styles.jsp" %>
+	<%@ include file="/WEB-INF/views/common/global.jsp"%>
+	<%@ include file="/WEB-INF/views/common/meta.jsp" %>
+	<%@ include file="/WEB-INF/views/common/include-base-styles.jsp" %>
 	<title>已部署流程定义列表--chapter5</title>
 </head>
 <body>

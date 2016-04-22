@@ -22,28 +22,24 @@ import activiti.common.persistence.bean.Parameter;
 import activiti.common.persistence.util.ReflectHelper;
 import activiti.entity.Leave;
 
- 
- 
-
 public class BaseDao<T> {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-    /**
-     * 实体类类型(由构造方法自动赋值)
-     */
-    private Class<?> entityClass;
 
-	
-	 /**
-     * 构造方法，根据实例类自动获取实体类类型
-     */
-    public BaseDao() {
-    	System.out.println("构造函数");
-        entityClass = ReflectHelper.getClassGenricType(getClass());
-        System.out.println("构造函数实例化的class值是:"+entityClass);
-    }
+	/**
+	 * 实体类类型(由构造方法自动赋值)
+	 */
+	private Class<?> entityClass;
+
+	/**
+	 * 构造方法，根据实例类自动获取实体类类型
+	 */
+	public BaseDao() {
+		System.out.println("构造函数");
+		entityClass = ReflectHelper.getClassGenricType(getClass());
+		System.out.println("构造函数实例化的class值是:" + entityClass);
+	}
 
 	public Session getSession() {
 		return sessionFactory.getCurrentSession();
@@ -63,7 +59,7 @@ public class BaseDao<T> {
 			}
 			// 插入前执行方法
 			if (StringUtils.isBlank((String) id)) {
-				 
+
 				for (Method method : entity.getClass().getMethods()) {
 					PrePersist pp = method.getAnnotation(PrePersist.class);
 					if (pp != null) {
@@ -94,9 +90,9 @@ public class BaseDao<T> {
 		}
 		getSession().save(entity);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public T get(Serializable id){
+	public T get(Serializable id) {
 		return (T) getSession().get(entityClass, id);
 	}
 
@@ -105,7 +101,7 @@ public class BaseDao<T> {
 		Query query = createQuery(qlString, parameter);
 		return (T) query.uniqueResult();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <E> List<E> find(String qlString, Parameter parameter) {
 		Query query = createQuery(qlString, parameter);

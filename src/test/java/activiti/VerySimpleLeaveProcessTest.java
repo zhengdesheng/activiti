@@ -63,18 +63,31 @@ public class VerySimpleLeaveProcessTest extends AbstractTest {
 
 		super.setUp();
 		Group group = identityService.newGroup("deptLeader");
-		group.setName("部门领导");
+		group.setName("deptLeader");
 		group.setType("assignment");
 		identityService.saveGroup(group);
+		
+		Group group1 = identityService.newGroup("hr");
+		group1.setName("hr");
+		group1.setType("assignment");
+		identityService.saveGroup(group1);
 
 		User user = identityService.newUser("zhengdesheng");
 		user.setFirstName("zheng");
 		user.setLastName("desheng");
+		user.setPassword("123456");
 		user.setEmail("812370410@qq.com");
 		identityService.saveUser(user);
+		
+		User user1 = identityService.newUser("tuaijun");
+		user1.setFirstName("tu");
+		user1.setLastName("aijun");
+		user1.setPassword("123456");
+		user1.setEmail("615746736@qq.com");
+		identityService.saveUser(user1);
 
 		identityService.createMembership("zhengdesheng", "deptLeader");
-
+		identityService.createMembership("tuaijun", "hr");
 		User userInGroup = identityService.createUserQuery().memberOfGroup("deptLeader").singleResult();
 		assertNotNull(userInGroup);
 
@@ -113,16 +126,15 @@ public class VerySimpleLeaveProcessTest extends AbstractTest {
 	public void testForm() {
 		inputStreamBybpmn("leave-bpmn/test.bpmn");
 		String start = "E:/MyEclipse Workspaces/activiti/src/main/resources/leave-bpmn/leave-start.form";
-		String end ="E:/MyEclipse Workspaces/activiti/src/main/resources/leave-bpmn/approve-deptLeader.form";
+		String end = "E:/MyEclipse Workspaces/activiti/src/main/resources/leave-bpmn/approve-deptLeader.form";
 		repositoryService.createDeployment().addString("start", getStringForFile(start)).deploy();
 		repositoryService.createDeployment().addString("end", getStringForFile(end)).deploy();
-		List<ProcessDefinition> processList =  repositoryService.createProcessDefinitionQuery().list();
+		List<ProcessDefinition> processList = repositoryService.createProcessDefinitionQuery().list();
 		for (int i = 0; i < processList.size(); i++) {
 			ProcessDefinition process = processList.get(i);
 			Object startFrom = formService.getRenderedStartForm(process.getId());
-			System.out.println("表单："+startFrom);
+			System.out.println("表单：" + startFrom);
 		}
-
 
 	}
 
@@ -133,7 +145,7 @@ public class VerySimpleLeaveProcessTest extends AbstractTest {
 			BufferedReader br = new BufferedReader(new FileReader(file));// 构造一个BufferedReader类来读取文件
 			String s = null;
 			while ((s = br.readLine()) != null) {// 使用readLine方法，一次读一行
-				result = result  + s;
+				result = result + s;
 			}
 			br.close();
 		} catch (Exception e) {
@@ -143,7 +155,5 @@ public class VerySimpleLeaveProcessTest extends AbstractTest {
 		return result;
 
 	}
-	
-	 
 
 }

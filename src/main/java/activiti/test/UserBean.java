@@ -14,7 +14,7 @@ public class UserBean {
 		// 当在调用Activiti RuntimeService的startProcessInstanceByKey方法时，
 		// 它将会结合到同一个事物中。
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("leavesayhello");
-		
+
 		System.out.println("pid=" + processInstance.getId() + ", pdid=" + processInstance.getProcessDefinitionId());
 	}
 

@@ -10,7 +10,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 
 import activiti.common.persistence.util.ApplicationContextHelper;
- 
 
 public abstract class AbstractController {
 
@@ -22,8 +21,8 @@ public abstract class AbstractController {
 	protected IdentityService identityService;
 	protected ManagementService managementService;
 	protected FormService formService;
-	
-	public AbstractController(){
+
+	public AbstractController() {
 		processEngine = (ProcessEngine) ApplicationContextHelper.getApplicationContext().getBean("processEngine");
 		identityService = (IdentityService) ApplicationContextHelper.getApplicationContext().getBean("identityService");
 		repositoryService = (RepositoryService) ApplicationContextHelper.getApplicationContext()
